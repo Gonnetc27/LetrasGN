@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>letrasJT</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="borde b-top" data-dir="t"></div>
+    <div class="borde b-bottom" data-dir="b"></div>
+    <div class="borde b-left" data-dir="l"></div>
+    <div class="borde b-right" data-dir="r"></div>
+    <div class="borde b-top-left" data-dir="tl"></div>
+    <div class="borde b-top-right" data-dir="tr"></div>
+    <div class="borde b-bottom-left" data-dir="bl"></div>
+    <div class="borde b-bottom-right" data-dir="br"></div>
+
+    <div class="controles top-right">
+      <div class="btn mover" title="Mover">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="5 9 2 12 5 15"></polyline>
+          <polyline points="9 5 12 2 15 5"></polyline>
+          <polyline points="19 9 22 12 19 15"></polyline>
+          <polyline points="9 19 12 22 15 19"></polyline>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <line x1="12" y1="2" x2="12" y2="22"></line>
+        </svg>
+      </div>
+      <button class="btn cerrar" onclick="window.close()" title="Cerrar">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="letras-container">
+      Escuchando...
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>

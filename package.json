@@ -1,0 +1,34 @@
+{
+  "name": "LetrasGN",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "windows-media-sessions": "^1.0.3"
+  },
+  "build": {
+    "appId": "com.gonzalo.LetrasGN",
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/windows-media-sessions/**"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false
+    }
+  }
+}

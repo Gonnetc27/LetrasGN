@@ -1,0 +1,75 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.2) !important; 
+  color: white;
+  font-family: sans-serif;
+  overflow: hidden;
+  border-radius: 12px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.controles {
+  position: absolute;
+  display: flex;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px;
+  z-index: 9999;
+  transition: all 0.2s ease;
+}
+
+.top-right { top: 0; right: 0; border-radius: 0 12px 0 6px; }
+.top-left { top: 0; left: 0; border-radius: 12px 0 6px 0; }
+.bottom-right { bottom: 0; right: 0; border-radius: 6px 0 12px 0; }
+.bottom-left { bottom: 0; left: 0; border-radius: 0 6px 0 12px; }
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: white;
+  border: none;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.mover { cursor: grab; }
+.mover:active { cursor: grabbing; }
+.mover:hover { background: rgba(255, 255, 255, 0.2); }
+.cerrar { cursor: pointer; }
+.cerrar:hover { background: #d9534f; }
+
+/* El contenedor que centra la frase única */
+.letras-container {
+  position: absolute;
+  top: 24px; /* Respeta los botones de arriba */
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  padding: 10px;
+  box-sizing: border-box;
+  font-size: 18px; 
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  overflow: hidden;
+}
+
+/* --- ZONAS DE AJUSTE INVISIBLES --- */
+.borde { position: absolute; z-index: 9998; }
+.b-top { top: 0; left: 0; width: 100%; height: 6px; cursor: ns-resize; }
+.b-bottom { bottom: 0; left: 0; width: 100%; height: 6px; cursor: ns-resize; }
+.b-left { top: 0; left: 0; width: 6px; height: 100%; cursor: ew-resize; }
+.b-right { top: 0; right: 0; width: 6px; height: 100%; cursor: ew-resize; }
+.b-top-left { top: 0; left: 0; width: 12px; height: 12px; cursor: nwse-resize; z-index: 9999; }
+.b-top-right { top: 0; right: 0; width: 12px; height: 12px; cursor: nesw-resize; z-index: 9999; }
+.b-bottom-left { bottom: 0; left: 0; width: 12px; height: 12px; cursor: nesw-resize; z-index: 9999; }
+.b-bottom-right { bottom: 0; right: 0; width: 12px; height: 12px; cursor: nwse-resize; z-index: 9999; }
