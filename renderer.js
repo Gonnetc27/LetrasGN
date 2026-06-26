@@ -1,9 +1,11 @@
 const { ipcRenderer } = require('electron');
-
 const controles = document.querySelector('.controles');
 const mover = document.querySelector('.mover');
 const contenedor = document.querySelector('.letras-container');
 const bordes = document.querySelectorAll('.borde');
+const btnRecargar = document.querySelector('.recargar');
+const textoCancion = document.querySelector('.info-cancion-texto');
+const contenedorInfo = document.querySelector('.info-cancion-container');
 
 let isDragging = false, isResizing = false, isHoveringUI = false; 
 let offsetX = 0, offsetY = 0, startW = 0, startH = 0, startX = 0, startY = 0, startWinX = 0, startWinY = 0;
@@ -56,7 +58,11 @@ window.addEventListener('mousemove', (e) => {
   }
 
   const target = e.target;
-  const overUI = target && (target.closest('.controles') || target.closest('.borde'));
+  const overUI = target && (
+    target.closest('.controles') || 
+    target.closest('.borde') || 
+    (viendoLetraCompleta && target.closest('.letras-container'))
+  );
 
   if (overUI && !isHoveringUI) {
     isHoveringUI = true;
@@ -73,14 +79,65 @@ window.addEventListener('mouseup', () => {
 });
 
 ipcRenderer.on('esquina-cambiada', (event, pos) => {
-  controles.classList.remove('top-right', 'top-left', 'bottom-right', 'bottom-left');
-  if (pos.isTop && !pos.isLeft) controles.classList.add('top-right');
-  if (pos.isTop && pos.isLeft) controles.classList.add('top-left');
-  if (!pos.isTop && !pos.isLeft) controles.classList.add('bottom-right');
-  if (!pos.isTop && pos.isLeft) controles.classList.add('bottom-left');
+  if (pos.isTop) {
+    controles.classList.add('top');
+    controles.classList.remove('bottom');
+  } else {
+    controles.classList.add('bottom');
+    controles.classList.remove('top');
+  }
 });
 
-// --- LÓGICA DE LETRAS ORIGINAL (UNA SOLA LÍNEA CLÁSICA) ---
+let viendoLetraCompleta = false; 
+const btnFullLetras = document.querySelector('.full-letras');
+
+
+ipcRenderer.on('actualizar-titulo', (event, titulo) => {
+  if (textoCancion) {
+    letrasSincronizadas = []; 
+    viendoLetraCompleta = false; 
+    contenedor.classList.remove('modo-completo');
+    contenedor.innerHTML = "🔍 Buscando letra..."; 
+    
+    textoCancion.textContent = titulo;
+    textoCancion.classList.remove('texto-movimiento');
+    textoCancion.style.removeProperty('--distancia-scroll');
+    
+    setTimeout(() => {
+      let difPixeles = textoCancion.scrollWidth - contenedorInfo.clientWidth;
+      if (difPixeles > 0) {
+        textoCancion.style.setProperty('--distancia-scroll', `-${difPixeles + 10}px`);
+        textoCancion.classList.add('texto-movimiento');
+      }
+    }, 400); 
+  }
+});
+
+btnRecargar.addEventListener('click', () => {
+  viendoLetraCompleta = false;
+  contenedor.classList.remove('modo-completo');
+  contenedor.innerHTML = "🎵 Recargando...";
+  ipcRenderer.send('recargar-letra');
+});
+
+btnFullLetras.addEventListener('click', () => {
+  viendoLetraCompleta = !viendoLetraCompleta;
+  
+  if (viendoLetraCompleta) {
+    contenedor.classList.add('modo-completo');
+    if (letrasSincronizadas.length > 0) {
+      contenedor.innerHTML = letrasSincronizadas.map(l => l.texto).join('<br><br>');
+    } else {
+      contenedor.innerHTML = "No hay letra disponible.";
+    }
+  } else {
+
+    contenedor.classList.remove('modo-completo');
+    actualizarPantalla();
+  }
+});
+
+
 let letrasSincronizadas = [];
 let tiempoActual = 0;
 let intervaloReloj = null;
@@ -109,7 +166,8 @@ function procesarLRC(lrcPuro) {
 }
 
 function actualizarPantalla() {
-  if (letrasSincronizadas.length === 0) return;
+  if (letrasSincronizadas.length === 0 || viendoLetraCompleta) return;
+  
   let lineaActual = "🎵";
   
   for (let i = 0; i < letrasSincronizadas.length; i++) {
@@ -120,16 +178,17 @@ function actualizarPantalla() {
     }
   }
   
-  if (contenedor.innerHTML !== lineaActual) {
+  if (estadoJugando && contenedor.innerHTML !== lineaActual) {
       contenedor.innerHTML = lineaActual;
   }
 }
 
 ipcRenderer.on('letra-lista', (event, letraPura) => {
   letrasSincronizadas = procesarLRC(letraPura);
-  // Acá estaba el error antes. Ahora solo ponemos la nota y esperamos el tiempo real.
-  contenedor.innerHTML = "🎵"; 
-  actualizarPantalla();
+  if (estadoJugando && !viendoLetraCompleta) {
+    contenedor.innerHTML = "🎵";
+    actualizarPantalla();
+  }
 });
 
 ipcRenderer.on('sincronizar-tiempo', (event, data) => {
@@ -151,10 +210,10 @@ ipcRenderer.on('sincronizar-tiempo', (event, data) => {
     if (estadoJugando) {
       intervaloReloj = setInterval(() => {
         tiempoActual += 0.1; 
-        actualizarPantalla();
+        actualizarPantalla(); 
       }, 100);
     } else {
-      actualizarPantalla();
+      if (!viendoLetraCompleta) contenedor.innerHTML = "⏸️ Esperando música...";
     }
   }
 });
