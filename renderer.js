@@ -91,7 +91,6 @@ ipcRenderer.on('esquina-cambiada', (event, pos) => {
 let viendoLetraCompleta = false; 
 const btnFullLetras = document.querySelector('.full-letras');
 
-
 ipcRenderer.on('actualizar-titulo', (event, titulo) => {
   if (textoCancion) {
     letrasSincronizadas = []; 
@@ -131,12 +130,10 @@ btnFullLetras.addEventListener('click', () => {
       contenedor.innerHTML = "No hay letra disponible.";
     }
   } else {
-
     contenedor.classList.remove('modo-completo');
     actualizarPantalla();
   }
 });
-
 
 let letrasSincronizadas = [];
 let tiempoActual = 0;

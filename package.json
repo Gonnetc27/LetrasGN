@@ -1,10 +1,11 @@
 {
   "name": "LetrasGN",
-  "version": "1.0.0",
-  "main": "main.js",
+  "version": "1.0.1",
+  "main": "main-ofuscado.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [],
   "author": "",
@@ -12,23 +13,31 @@
   "description": "",
   "devDependencies": {
     "electron": "^42.4.0",
-    "electron-builder": "^26.15.3"
+    "electron-builder": "^26.15.3",
+    "javascript-obfuscator": "^5.4.3"
   },
   "dependencies": {
     "windows-media-sessions": "^1.0.3"
   },
   "build": {
     "appId": "com.gonzalo.LetrasGN",
-    "asar": true,
-    "asarUnpack": [
-      "**/node_modules/windows-media-sessions/**"
+    "asar": false,
+    "files": [
+      "**/*",
+      "!main.js",
+      "!renderer.js",
+      "!compilar.js",
+      "!LetrasGN_Debug.txt",
+      "!*.backup"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
-      "oneClick": true,
-      "perMachine": false
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
